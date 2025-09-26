@@ -8,7 +8,7 @@ from typing import Tuple, Optional
 import paho.mqtt.client as mqtt
 
 # --- CONFIG ---
-MQTT_HOST = "localhost"
+MQTT_HOST = "192.168.1.152"
 MQTT_PORT = 1883
 BASE = "home/keyboard"  # topic root
 # ----------------
