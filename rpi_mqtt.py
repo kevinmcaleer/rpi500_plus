@@ -240,6 +240,11 @@ def on_message(client, userdata, msg):
     topic = msg.topic
     payload = msg.payload.decode("utf-8").strip()
 
+    # Debug output for incoming messages
+    print(f"[DEBUG] Received message:")
+    print(f"  Topic: {topic}. Payload: '{payload}', length: {len(payload)}")
+   
+
     try:
         # Topics:
         #  - {BASE}/led → set whole keyboard colour
@@ -253,24 +258,30 @@ def on_message(client, userdata, msg):
         parts = topic.split("/")
 
         if topic == f"{BASE}/clear":
+            print(f"[DEBUG] Processing clear command")
             leds_clear()
             return
 
         if topic == f"{BASE}/brightness":
+            print(f"[DEBUG] Processing brightness command: {payload}")
             set_brightness(int(payload))
             return
 
         if topic == f"{BASE}/hue":
+            print(f"[DEBUG] Processing hue command: {payload}")
             set_hue(int(payload))
             return
 
         if topic == f"{BASE}/preset/index":
+            print(f"[DEBUG] Processing preset index command: {payload}")
             set_preset_index(int(payload))
             return
 
         if topic == f"{BASE}/effect":
+            print(f"[DEBUG] Processing effect command: {payload}")
             if payload.startswith("{"):
                 obj = json.loads(payload)
+                print(f"[DEBUG] Effect JSON parsed: {obj}")
                 set_effect(
                     obj.get("effect", ""),
                     speed=obj.get("speed"),
@@ -278,36 +289,45 @@ def on_message(client, userdata, msg):
                     saturation=obj.get("saturation"),
                 )
             else:
+                print(f"[DEBUG] Effect string: {payload}")
                 set_effect(payload)
             return
 
         if topic == f"{BASE}/led":
+            print(f"[DEBUG] Processing LED all command: {payload}")
             colour = parse_colour(payload)
+            print(f"[DEBUG] Parsed colour: {colour}")
             leds_set_all(colour)
             return
 
         # /led/<row,col>
         if len(parts) == 4 and parts[2] == "led" and re.fullmatch(r"\d+,\d+", parts[3]):
             row, col = (int(x) for x in parts[3].split(","))
+            print(f"[DEBUG] Processing LED row,col command: row={row}, col={col}, payload={payload}")
             colour = parse_colour(payload)
+            print(f"[DEBUG] Parsed colour: {colour}")
             led_set_rc(row, col, colour)
             return
 
         # /led/key/<KEY>
         if len(parts) == 5 and parts[2] == "led" and parts[3] == "key":
             key = parts[4].upper()
+            print(f"[DEBUG] Processing LED key command: key={key}, payload={payload}")
             if key not in KEYMAP:
-                print(f"Unknown key '{key}'. Populate KEYMAP or use row,col.")
+                print(f"[DEBUG] Unknown key '{key}'. Populate KEYMAP or use row,col.")
                 return
             row, col = KEYMAP[key]
+            print(f"[DEBUG] Key '{key}' mapped to row={row}, col={col}")
             colour = parse_colour(payload)
+            print(f"[DEBUG] Parsed colour: {colour}")
             led_set_rc(row, col, colour)
             return
 
-        print(f"Unhandled topic: {topic}")
+        print(f"[DEBUG] Unhandled topic: {topic}")
 
     except Exception as e:
-        print("Error:", e)
+        print(f"[DEBUG] Error processing message: {e}")
+        print(f"[DEBUG] Topic: {topic}, Payload: {payload}")
 
 def main():
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
