@@ -68,7 +68,7 @@ def leds_set_all_OLD(colour: str):
     try:
         # Try with fresh keyboard instance
         print(f"[DEBUG] Creating fresh keyboard instance")
-        import os
+       
         print(f"[DEBUG] Current working directory: {os.getcwd()}")
         print(f"[DEBUG] Current user ID: {os.getuid()}")
         print(f"[DEBUG] Environment PATH: {os.environ.get('PATH', 'NOT SET')}")
@@ -87,7 +87,7 @@ def leds_set_all_OLD(colour: str):
         print(f"[DEBUG] Clearing first...")
         fresh_keyboard.rgb_clear()
 
-        import time
+    
         time.sleep(0.5)
 
         print(f"[DEBUG] Setting LED direct effect")
@@ -99,7 +99,7 @@ def leds_set_all_OLD(colour: str):
         print(f"[DEBUG] Step 1: Clear LEDs")
         fresh_keyboard.rgb_clear()
 
-        import time
+    
         time.sleep(0.5)
 
         print(f"[DEBUG] Step 2: Set direct effect")
@@ -133,7 +133,7 @@ def leds_set_all_OLD(colour: str):
         print(f"[DEBUG] Trying simple approach with rgb_clear + direct set")
         try:
             # Try a different approach - clear first, then set
-            import time
+           
             time.sleep(0.2)
 
             simple_keyboard = RPiKeyboardConfig()
